@@ -13,17 +13,26 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+/**
+ * Metadata: Cấu hình thông tin SEO và chia sẻ mạng xã hội cho trang web.
+ * === CÁC THAY ĐỔI CỦA BẠN NẰM Ở ĐÂY ===
+ */
 export const metadata = {
-  title: "Memaybo | Full-stack Developer",
-  description: "Trang bio cá nhân của Memaybo (Vương Lâm), giới thiệu các dự án và thông tin liên hệ.",
+  // Tiêu đề hiển thị trên tab trình duyệt
+  title: "Shizuna | Just a normal person",
+  
+  // Mô tả ngắn cho công cụ tìm kiếm
+  description: "Trang bio cá nhân của Shizuna (Vương Lâm).",
+  
+  // Cấu hình Open Graph (dành cho Discord, Facebook, v.v.)
   openGraph: {
-    title: "Memaybo | Full-stack Developer",
-    description: "Trang bio cá nhân của Memaybo (Vương Lâm).",
-    url: 'https://mybio-lvve.vercel.app/',
-    siteName: 'Memaybo Bio',
+    title: "Shizuna | Just a normal person", // Tiêu đề lớn khi chia sẻ link
+    description: "Trang bio cá nhân của Shizuna (Vương Lâm).", // Mô tả nhỏ bên dưới
+    url: 'https://shizuna-bio.vercel.app/', // URL trang web của bạn
+    siteName: 'Shizuna Bio', // Tên trang web
     images: [
       {
-        url: '/og-image.png',
+        url: '/og-image.png', // Ảnh xem trước khi chia sẻ link
         width: 1200,
         height: 630,
       },
@@ -46,7 +55,7 @@ export default function RootLayout({ children }) {
           autoPlay 
           loop 
           muted 
-          preload="auto" // Tải trước video
+          preload="auto"
           className="absolute top-0 left-0 w-full h-full object-cover z-[-2]"
         >
           <source src="/background.mp4" type="video/mp4" />
