@@ -3,37 +3,20 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { FaPause, FaPlay } from 'react-icons/fa';
+import { motion } from 'framer-motion'; // <-- THÊM DÒNG NÀY ĐỂ SỬA LỖI
 
 const MusicPlayer = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  // --- THAY ĐỔI DUY NHẤT Ở ĐÂY ---
-  const [volume, setVolume] = useState(0.6); // <-- Âm lượng mặc định là 60%
-  // ---------------------------------
+  // Bắt đầu với trạng thái ĐANG PHÁT
+  const [isPlaying, setIsPlaying] = useState(true); 
+  const [volume, setVolume] = useState(0.6);
   const [isHovering, setIsHovering] = useState(false);
   const audioRef = useRef(null);
 
-  // Tự động phát nhạc khi trang tải
-  useEffect(() => {
-    const attemptAutoplay = async () => {
-      if (audioRef.current) {
-        try {
-          // Cập nhật âm lượng trước khi phát
-          audioRef.current.volume = 0.6; 
-          await audioRef.current.play();
-          setIsPlaying(true);
-        } catch (error) {
-          console.log("Autoplay was prevented. User needs to interact with the page first.");
-          setIsPlaying(false);
-        }
-      }
-    };
-    attemptAutoplay();
-  }, []);
-
-  // Cập nhật âm lượng khi người dùng kéo thanh trượt
+  // Tự động phát nhạc khi component được mount
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume;
+      audioRef.current.play().catch(e => console.error("Error playing audio:", e));
     }
   }, [volume]);
 
@@ -48,8 +31,11 @@ const MusicPlayer = () => {
   };
 
   return (
-    <div 
+    <motion.div 
       className="fixed bottom-6 right-6 z-50"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.5 }} // Xuất hiện sau thẻ bio một chút
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
@@ -81,7 +67,7 @@ const MusicPlayer = () => {
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
