@@ -1,15 +1,14 @@
 // app/components/LiveBackground.js
 
-"use client"; // Rất quan trọng! Component này cần chạy ở phía client.
+"use client"; 
 
 import { useEffect, useMemo, useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
-import { loadSlim } from "@tsparticles/slim"; // Tải phiên bản slim nhẹ hơn
+import { loadSlim } from "@tsparticles/slim"; 
 
 const LiveBackground = () => {
   const [init, setInit] = useState(false);
 
-  // Khởi tạo engine một lần duy nhất
   useEffect(() => {
     initParticlesEngine(async (engine) => {
       await loadSlim(engine);
@@ -22,20 +21,19 @@ const LiveBackground = () => {
     console.log(container);
   };
 
-  // Cấu hình cho các hạt
   const options = useMemo(
     () => ({
       background: {
         color: {
-          value: "transparent", // Nền trong suốt để thấy được CSS phía sau
+          value: "transparent",
         },
       },
-      fpsLimit: 60, // Giới hạn FPS để tối ưu hiệu năng
+      fpsLimit: 60,
       interactivity: {
         events: {
           onHover: {
             enable: true,
-            mode: "repulse", // Hiệu ứng khi di chuột vào: đẩy các hạt ra xa
+            mode: "repulse",
           },
           resize: true,
         },
@@ -48,10 +46,10 @@ const LiveBackground = () => {
       },
       particles: {
         color: {
-          value: "#ffffff", // Màu của các hạt
+          value: "#ffffff", // Giữ nguyên màu trắng
         },
         links: {
-          color: "#ffffff", // Màu của các đường nối
+          color: "#ffffff", // Giữ nguyên màu trắng
           distance: 150,
           enable: true,
           opacity: 0.2,
@@ -64,7 +62,7 @@ const LiveBackground = () => {
             default: "bounce",
           },
           random: false,
-          speed: 1, // Tốc độ di chuyển của hạt
+          speed: 1,
           straight: false,
         },
         number: {
@@ -72,7 +70,7 @@ const LiveBackground = () => {
             enable: true,
             area: 800,
           },
-          value: 80, // Số lượng hạt
+          value: 80,
         },
         opacity: {
           value: 0.3,
@@ -95,7 +93,7 @@ const LiveBackground = () => {
         id="tsparticles"
         particlesLoaded={particlesLoaded}
         options={options}
-        className="absolute top-0 left-0 w-full h-full z-[-1]" // Quan trọng: Đặt background ra sau cùng
+        className="absolute top-0 left-0 w-full h-full" // z-index sẽ được quản lý bởi layout
       />
     );
   }

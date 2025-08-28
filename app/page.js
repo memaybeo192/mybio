@@ -10,19 +10,26 @@ import MusicPlayer from './components/MusicPlayer';
 import SplashScreen from './components/SplashScreen';
 
 /**
- * Component SocialLink: Hiển thị một liên kết mạng xã hội có thể click.
+ * Component SocialLink: Đã được nâng cấp với motion.a và hiệu ứng whileHover.
  */
-const SocialLink = ({ href, icon, label }) => (
-  <a
+const SocialLink = ({ href, icon, label, variants }) => (
+  <motion.a
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className="flex items-center gap-4 p-3 rounded-lg transition-all duration-300 hover:bg-white/20 hover:scale-[1.02]"
+    className="flex items-center gap-4 p-3 rounded-lg"
     aria-label={label}
+    variants={variants}
+    whileHover={{ 
+      scale: 1.05, 
+      backgroundColor: "rgba(255, 255, 255, 0.15)",
+      x: 5 
+    }}
+    transition={{ type: "spring", stiffness: 300 }}
   >
     {icon}
     <span className="font-medium">{label}</span>
-  </a>
+  </motion.a>
 );
 
 // Cấu hình cho animation xuất hiện lần lượt (Staggered Animation)
@@ -31,7 +38,7 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1, // Mỗi phần tử con sẽ xuất hiện cách nhau 0.1 giây
+      staggerChildren: 0.1,
     },
   },
 };
@@ -54,14 +61,12 @@ const itemVariants = {
 export default function BioPage() {
   const [isEntered, setIsEntered] = useState(false);
 
-  // Hàm được gọi khi người dùng click vào màn hình chờ
   const handleEnter = () => {
     setIsEntered(true);
   };
 
   return (
     <div className="font-sans flex items-center justify-center min-h-screen p-4 text-white">
-      {/* AnimatePresence xử lý animation khi một component bị xóa khỏi cây DOM */}
       <AnimatePresence>
         {!isEntered && (
           <motion.div
@@ -74,7 +79,6 @@ export default function BioPage() {
         )}
       </AnimatePresence>
 
-      {/* Chỉ render nội dung chính sau khi người dùng đã "Enter" */}
       {isEntered && (
         <>
           <MusicPlayer />
@@ -94,15 +98,13 @@ export default function BioPage() {
               animate="visible"
             >
               <motion.div variants={itemVariants} className="flex flex-col items-center text-center gap-6">
-                
-                {/* Hiệu ứng "Breathing" cho Avatar */}
                 <motion.div
                   animate={{
-                    scale: [1, 1.05, 1], // Phóng to rồi thu nhỏ
-                    rotate: [0, 0.5, -0.5, 0.5, 0], // Xoay nhẹ
+                    scale: [1, 1.05, 1],
+                    rotate: [0, 0.5, -0.5, 0.5, 0],
                   }}
                   transition={{
-                    duration: 5, // Kéo dài 5 giây cho mỗi chu kỳ
+                    duration: 5,
                     repeat: Infinity,
                     repeatType: "reverse",
                     ease: "easeInOut",
@@ -114,7 +116,6 @@ export default function BioPage() {
                     width={120}
                     height={120}
                     className="rounded-full border-2 border-white/20"
-                    // Thêm shadow động để tạo hiệu ứng "phát sáng"
                     style={{ boxShadow: '0 0 20px rgba(255, 255, 255, 0.3)' }}
                     priority
                     unoptimized
@@ -123,7 +124,7 @@ export default function BioPage() {
 
                 <div className="flex flex-col gap-2">
                   <motion.h1 variants={itemVariants} className="text-3xl font-bold tracking-tight text-white">
-                    Memayboo (Lam)
+                    Shizuna (Lam)
                   </motion.h1>
                   <motion.p variants={itemVariants} className="text-md text-white/70">
                     Just a normal person | Birthday 18/1
@@ -132,11 +133,11 @@ export default function BioPage() {
               </motion.div>
 
               <motion.div variants={containerVariants} className="mt-10 flex flex-col gap-3">
-                <motion.div variants={itemVariants}><SocialLink href="https://www.youtube.com/@Memayybo" icon={<FaYoutube size={24} />} label="Memayybo" /></motion.div>
-                <motion.div variants={itemVariants}><SocialLink href="https://www.facebook.com/vuonglamzz/" icon={<FaFacebook size={24} />} label="Vuong Lam Nguyen" /></motion.div>
-                <motion.div variants={itemVariants}><SocialLink href="https://github.com/memaybeo192" icon={<FaGithub size={24} />} label="Memaybeo192" /></motion.div>
-                <motion.div variants={itemVariants}><InfoRow icon={<FaDiscord size={24} />} text="lam017367" copyText="lam017367" /></motion.div>
-                <motion.div variants={itemVariants}><InfoRow icon={<FaEnvelope size={24} />} text="nguyenvuonglam74@gmail.com" copyText="nguyenvuonglam74@gmail.com" /></motion.div>
+                <SocialLink variants={itemVariants} href="https://www.youtube.com/@Memayybo" icon={<FaYoutube size={24} />} label="Memayybo" />
+                <SocialLink variants={itemVariants} href="https://www.facebook.com/vuonglamzz/" icon={<FaFacebook size={24} />} label="Vuong Lam Nguyen" />
+                <SocialLink variants={itemVariants} href="https://github.com/memaybeo192" icon={<FaGithub size={24} />} label="Memaybeo192" />
+                <InfoRow icon={<FaDiscord size={24} />} text="lam017367" copyText="lam017367" variants={itemVariants} />
+                <InfoRow icon={<FaEnvelope size={24} />} text="nguyenvuonglam74@gmail.com" copyText="nguyenvuonglam74@gmail.com" variants={itemVariants} />
               </motion.div>
             </motion.main>
           </ParallaxTilt>
