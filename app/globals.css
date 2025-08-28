@@ -20,12 +20,11 @@
 }
 
 body {
+  /* 
+    Chúng ta chỉ cần một màu nền tối vững chắc.
+    Component LiveBackground sẽ hiển thị các hạt Paricles LÊN TRÊN màu nền này.
+    Phần ảnh nền tĩnh (background-image) đã được xóa bỏ.
+  */
   color: var(--foreground);
-  background-color: var(--background); /* Màu nền dự phòng nếu ảnh không tải được */
-  
-  /* --- Thêm ảnh nền cho hiệu ứng Blur --- */
-  background-image: url('/background.jpg'); /* Đảm bảo bạn có ảnh này trong thư mục /public/background.jpg */
-  background-size: cover; /* Phủ kín toàn bộ màn hình */
-  background-position: center; /* Căn giữa ảnh */
-  background-attachment: fixed; /* Giữ ảnh nền đứng yên khi cuộn trang */
+  background-color: #0a0a0a; 
 }

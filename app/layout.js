@@ -1,5 +1,8 @@
+// app/layout.js
+
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import LiveBackground from "./components/LiveBackground"; // <-- 1. Import component
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,6 +25,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <LiveBackground /> {/* <-- 2. Thêm component vào đây */}
         {children}
       </body>
     </html>
