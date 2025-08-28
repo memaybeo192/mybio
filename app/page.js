@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from 'react';
-import Image from "next/image"; // Vẫn giữ lại import này nếu bạn dùng ở nơi khác, nếu không có thể xóa
+import { useState, useEffect } from 'react'; // 1. Import thêm useEffect
+import Image from "next/image";
 import { FaGithub, FaYoutube, FaFacebook, FaDiscord, FaEnvelope, FaCube } from "react-icons/fa";
 import { motion, AnimatePresence } from 'framer-motion';
 import ParallaxTilt from 'react-parallax-tilt';
@@ -54,27 +54,43 @@ const listContainerVariants = {
 };
 
 export default function BioPage() {
-  const [isEntered, setIsEntered] = useState(false);
+  // 2. Đổi tên state cho rõ ràng và thêm state mới `isLoading`
+  const [showSplash, setShowSplash] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 3. Effect để giả lập thời gian tải, "câu giờ"
+  useEffect(() => {
+    // Timer này đảm bảo màn hình loading hiển thị ít nhất 3 giây
+    // để người dùng kịp đọc các thông điệp và cảm nhận sự mượt mà.
+    const loadingTimer = setTimeout(() => {
+      setIsLoading(false); // Sau 3 giây, cho phép người dùng vào trang
+    }, 3000);
+
+    // Dọn dẹp timer khi component bị hủy
+    return () => clearTimeout(loadingTimer);
+  }, []); // Mảng rỗng đảm bảo effect này chỉ chạy 1 lần
 
   const handleEnter = () => {
-    setIsEntered(true);
+    setShowSplash(false);
   };
 
   return (
     <div className="font-sans flex items-center justify-center min-h-screen p-4 text-white">
       <AnimatePresence>
-        {!isEntered && (
+        {showSplash && (
           <motion.div
             key="splash"
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <SplashScreen onEnter={handleEnter} />
+            {/* 4. Truyền trạng thái isLoading xuống SplashScreen */}
+            <SplashScreen onEnter={handleEnter} isLoading={isLoading} />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {isEntered && (
+      {/* 5. Chỉ render nội dung chính khi splash screen đã tắt */}
+      {!showSplash && (
         <>
           <MusicPlayer />
           
@@ -106,12 +122,11 @@ export default function BioPage() {
                     ease: "easeInOut",
                   }}
                 >
-                  {/* === THAY THẾ AVATAR TỪ IMAGE SANG VIDEO === */}
                   <video
                     autoPlay
                     loop
                     muted
-                    playsInline // Quan trọng cho trình duyệt mobile
+                    playsInline
                     width={120}
                     height={120}
                     className="rounded-full border-2 border-white/20"
