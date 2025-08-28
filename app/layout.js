@@ -1,7 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import CursorLight from "./components/CursorLight";
-import LiveBackground from "./components/LiveBackground"; // Kích hoạt component nền hạt
+import LiveBackground from "./components/LiveBackground";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,25 +39,21 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* Các hiệu ứng nằm ở lớp trên cùng */}
         <CursorLight />
         <LiveBackground />
 
-        {/* Lớp nền video, nằm ở phía sau cùng */}
         <video 
           autoPlay 
           loop 
           muted 
+          preload="auto" // Tải trước video
           className="absolute top-0 left-0 w-full h-full object-cover z-[-2]"
         >
           <source src="/background.mp4" type="video/mp4" />
         </video>
         
-        {/* LỚP PHỦ TỐI ĐƯỢC THÊM VÀO ĐÂY */}
-        {/* Lớp này làm video tối đi, giúp các hiệu ứng và chữ trắng nổi bật hơn */}
-        <div className="absolute top-0 left-0 w-full h-full bg-black/40 z-[-1]"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-black/30 z-[-1]"></div>
         
-        {/* Nội dung chính của trang */}
         {children}
       </body>
     </html>

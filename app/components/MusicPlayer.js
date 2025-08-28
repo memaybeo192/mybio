@@ -36,12 +36,14 @@ const MusicPlayer = () => {
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      <audio ref={audioRef} src="/background-music.mp3" loop />
+      <audio 
+        ref={audioRef} 
+        src="/background-music.mp3" 
+        loop 
+        preload="auto" // Tải trước audio
+      />
       
       <div 
-        // === THAY ĐỔI CHÍNH Ở ĐÂY ===
-        // 1. Trả lại độ trong suốt ban đầu: bg-black/25
-        // 2. Thêm hiệu ứng đổ bóng: shadow-lg
         className="flex items-center justify-end bg-black/25 backdrop-blur-lg border border-white/10 rounded-full transition-all duration-300 ease-in-out overflow-hidden shadow-lg"
         style={{ height: '56px', width: isHovering ? '220px' : '56px' }}
       >
@@ -60,7 +62,6 @@ const MusicPlayer = () => {
         <div className="flex-shrink-0">
           <button
             onClick={togglePlayPause}
-            // Trả lại độ trong suốt ban đầu cho nút bấm
             className="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors"
             aria-label={isPlaying ? "Pause" : "Play"}
           >
