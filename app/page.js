@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import Image from "next/image";
+import Image from "next/image"; // Vẫn giữ lại import này nếu bạn dùng ở nơi khác, nếu không có thể xóa
 import { FaGithub, FaYoutube, FaFacebook, FaDiscord, FaEnvelope, FaCube } from "react-icons/fa";
 import { motion, AnimatePresence } from 'framer-motion';
 import ParallaxTilt from 'react-parallax-tilt';
@@ -79,7 +79,7 @@ export default function BioPage() {
           <MusicPlayer />
           
           <ParallaxTilt
-            className="rounded-2xl overflow-hidden" // <-- THÊM DÒNG NÀY
+            className="rounded-2xl overflow-hidden"
             tiltMaxAngleX={5}
             tiltMaxAngleY={5}
             glareEnable={true}
@@ -106,16 +106,19 @@ export default function BioPage() {
                     ease: "easeInOut",
                   }}
                 >
-                  <Image
-                    src="/avatar.gif" 
-                    alt="Memaybo Avatar"
+                  {/* === THAY THẾ AVATAR TỪ IMAGE SANG VIDEO === */}
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline // Quan trọng cho trình duyệt mobile
                     width={120}
                     height={120}
                     className="rounded-full border-2 border-white/20"
                     style={{ boxShadow: '0 0 20px rgba(255, 255, 255, 0.3)' }}
-                    priority
-                    unoptimized
-                  />
+                  >
+                    <source src="/avatar.mp4" type="video/mp4" />
+                  </video>
                 </motion.div>
 
                 <div className="flex flex-col gap-2">
