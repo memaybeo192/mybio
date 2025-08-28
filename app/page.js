@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react'; // 1. Import thêm useEffect
+import { useState, useEffect } from 'react';
 import Image from "next/image";
 import { FaGithub, FaYoutube, FaFacebook, FaDiscord, FaEnvelope, FaCube } from "react-icons/fa";
 import { motion, AnimatePresence } from 'framer-motion';
@@ -8,6 +8,15 @@ import ParallaxTilt from 'react-parallax-tilt';
 import InfoRow from './components/InfoRow';
 import MusicPlayer from './components/MusicPlayer';
 import SplashScreen from './components/SplashScreen';
+// 1. Import hook mới
+import { useAssetPreloader } from './hooks/useAssetPreloader';
+
+// 2. Định nghĩa danh sách các assets quan trọng cần tải trước
+const criticalAssets = [
+  '/background.mp4',
+  '/avatar.mp4',
+  '/background-music.mp3'
+];
 
 const SocialLink = ({ href, icon, label }) => (
   <motion.a
@@ -54,24 +63,15 @@ const listContainerVariants = {
 };
 
 export default function BioPage() {
-  // 2. Đổi tên state cho rõ ràng và thêm state mới `isLoading`
   const [showSplash, setShowSplash] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // 3. Effect để giả lập thời gian tải, "câu giờ"
-  useEffect(() => {
-    // Timer này đảm bảo màn hình loading hiển thị ít nhất 3 giây
-    // để người dùng kịp đọc các thông điệp và cảm nhận sự mượt mà.
-    const loadingTimer = setTimeout(() => {
-      setIsLoading(false); // Sau 3 giây, cho phép người dùng vào trang
-    }, 3000);
-
-    // Dọn dẹp timer khi component bị hủy
-    return () => clearTimeout(loadingTimer);
-  }, []); // Mảng rỗng đảm bảo effect này chỉ chạy 1 lần
+  // 3. Sử dụng hook để lấy trạng thái tải thực tế
+  const isPreloading = useAssetPreloader(criticalAssets);
 
   const handleEnter = () => {
-    setShowSplash(false);
+    // Chỉ cho phép vào khi đã hết preloading
+    if (!isPreloading) {
+      setShowSplash(false);
+    }
   };
 
   return (
@@ -83,13 +83,12 @@ export default function BioPage() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
-            {/* 4. Truyền trạng thái isLoading xuống SplashScreen */}
-            <SplashScreen onEnter={handleEnter} isLoading={isLoading} />
+            {/* 4. Truyền trạng thái isPreloading thực tế xuống SplashScreen */}
+            <SplashScreen onEnter={handleEnter} isLoading={isPreloading} />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* 5. Chỉ render nội dung chính khi splash screen đã tắt */}
       {!showSplash && (
         <>
           <MusicPlayer />
