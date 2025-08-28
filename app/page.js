@@ -33,7 +33,7 @@ export default function BioPage() {
       label: "LinkedIn",
     },
     {
-      href: "mailto:your-email@example.com",
+      href: "mailto:nguyenvuonglam74@gmail.com",
       icon: <FaEnvelope size={24} />,
       label: "Email",
     },
