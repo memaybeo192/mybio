@@ -2,24 +2,20 @@
 
 import { useState } from 'react';
 import Image from "next/image";
-import { FaGithub, FaYoutube, FaFacebook, FaDiscord, FaEnvelope } from "react-icons/fa";
+import { FaGithub, FaYoutube, FaFacebook, FaDiscord, FaEnvelope, FaCube } from "react-icons/fa";
 import { motion, AnimatePresence } from 'framer-motion';
 import ParallaxTilt from 'react-parallax-tilt';
 import InfoRow from './components/InfoRow';
 import MusicPlayer from './components/MusicPlayer';
 import SplashScreen from './components/SplashScreen';
 
-/**
- * Component SocialLink: Đã được nâng cấp với motion.a và hiệu ứng whileHover.
- */
-const SocialLink = ({ href, icon, label, variants }) => (
+const SocialLink = ({ href, icon, label }) => (
   <motion.a
     href={href}
     target="_blank"
     rel="noopener noreferrer"
     className="flex items-center gap-4 p-3 rounded-lg"
     aria-label={label}
-    variants={variants}
     whileHover={{ 
       scale: 1.05, 
       backgroundColor: "rgba(255, 255, 255, 0.15)",
@@ -27,21 +23,10 @@ const SocialLink = ({ href, icon, label, variants }) => (
     }}
     transition={{ type: "spring", stiffness: 300 }}
   >
-    {icon}
+    <span className="animate-glow">{icon}</span>
     <span className="font-medium">{label}</span>
   </motion.a>
 );
-
-// Cấu hình cho animation xuất hiện lần lượt (Staggered Animation)
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
 
 const itemVariants = {
   hidden: { y: 20, opacity: 0 },
@@ -55,9 +40,19 @@ const itemVariants = {
   },
 };
 
-/**
- * Component BioPage: Trang bio chính của bạn.
- */
+const listContainerVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      ease: "easeOut",
+      delay: 0.2
+    },
+  },
+};
+
 export default function BioPage() {
   const [isEntered, setIsEntered] = useState(false);
 
@@ -84,16 +79,17 @@ export default function BioPage() {
           <MusicPlayer />
           
           <ParallaxTilt
+            className="rounded-2xl overflow-hidden" // <-- THÊM DÒNG NÀY
             tiltMaxAngleX={5}
             tiltMaxAngleY={5}
             glareEnable={true}
             glareMaxOpacity={0.15}
             glarePosition="all"
             scale={1.02}
+            glareStyle={{ borderRadius: '1rem' }}
           >
             <motion.main 
               className="w-full max-w-md mx-auto p-8 rounded-2xl shadow-lg bg-black/25 backdrop-blur-lg border border-white/10"
-              variants={containerVariants}
               initial="hidden"
               animate="visible"
             >
@@ -123,21 +119,25 @@ export default function BioPage() {
                 </motion.div>
 
                 <div className="flex flex-col gap-2">
-                  <motion.h1 variants={itemVariants} className="text-3xl font-bold tracking-tight text-white">
-                    Shizuna (Lam)
+                  <motion.h1 className="text-3xl font-bold tracking-tight text-white">
+                    Memayboo (Lam)
                   </motion.h1>
-                  <motion.p variants={itemVariants} className="text-md text-white/70">
+                  <motion.p className="text-md text-white/70">
                     Just a normal person | Birthday 18/1
                   </motion.p>
                 </div>
               </motion.div>
 
-              <motion.div variants={containerVariants} className="mt-10 flex flex-col gap-3">
-                <SocialLink variants={itemVariants} href="https://www.youtube.com/@Memayybo" icon={<FaYoutube size={24} />} label="Memayybo" />
-                <SocialLink variants={itemVariants} href="https://www.facebook.com/vuonglamzz/" icon={<FaFacebook size={24} />} label="Vuong Lam Nguyen" />
-                <SocialLink variants={itemVariants} href="https://github.com/memaybeo192" icon={<FaGithub size={24} />} label="Memaybeo192" />
-                <InfoRow icon={<FaDiscord size={24} />} text="lam017367" copyText="lam017367" variants={itemVariants} />
-                <InfoRow icon={<FaEnvelope size={24} />} text="nguyenvuonglam74@gmail.com" copyText="nguyenvuonglam74@gmail.com" variants={itemVariants} />
+              <motion.div 
+                className="mt-10 flex flex-col gap-3"
+                variants={listContainerVariants}
+              >
+                <SocialLink href="https://www.youtube.com/@Memayybo" icon={<FaYoutube size={24} />} label="Memayybo" />
+                <SocialLink href="https://www.facebook.com/vuonglamzz/" icon={<FaFacebook size={24} />} label="Vuong Lam Nguyen" />
+                <SocialLink href="https://github.com/memaybeo192" icon={<FaGithub size={24} />} label="Memaybeo192" />
+                <SocialLink href="https://namemc.com/profile/Sayuna_VN.1" icon={<FaCube size={24} />} label="Sayuna_VN" />
+                <InfoRow icon={<FaDiscord size={24} />} text="lam017367" copyText="lam017367" />
+                <InfoRow icon={<FaEnvelope size={24} />} text="nguyenvuonglam74@gmail.com" copyText="nguyenvuonglam74@gmail.com" />
               </motion.div>
             </motion.main>
           </ParallaxTilt>

@@ -1,4 +1,3 @@
-// app/components/CursorLight.js
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -23,6 +22,7 @@ const CursorLight = () => {
     <motion.div
       className="pointer-events-none fixed inset-0 z-30 transition duration-300"
       style={{
+        // === THAY ĐỔI Ở ĐÂY ===
         background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(255, 255, 255, 0.1), transparent 80%)`,
       }}
     />
