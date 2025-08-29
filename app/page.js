@@ -137,7 +137,7 @@ export default function BioPage() {
 
                 <div className="flex flex-col gap-2">
                   <motion.h1 className="text-3xl font-bold tracking-tight text-white">
-                    Memayboo (Lam)
+                    Shizuna (Lam)
                   </motion.h1>
                   <motion.p className="text-md text-white/70">
                     Just a normal person | Birthday 18/1
