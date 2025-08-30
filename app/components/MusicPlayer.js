@@ -1,11 +1,14 @@
+// app/components/MusicPlayer.js
 "use client";
 
 import { useState, useRef, useEffect } from 'react';
 import { FaPause, FaPlay } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
-const MusicPlayer = () => {
-  const [isPlaying, setIsPlaying] = useState(true); 
+// --- THAY ĐỔI QUAN TRỌNG ---
+// Thêm prop `src` vào
+const MusicPlayer = ({ startPlaying, src }) => { 
+  const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.6);
   const [isHovering, setIsHovering] = useState(false);
   const audioRef = useRef(null);
@@ -13,11 +16,21 @@ const MusicPlayer = () => {
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume;
-      audioRef.current.play().catch(e => console.error("Error playing audio:", e));
     }
   }, [volume]);
 
+  useEffect(() => {
+    // Thêm điều kiện kiểm tra `src` đã có chưa
+    if (startPlaying && src && audioRef.current) {
+      audioRef.current.play().catch(e => console.error("Error playing audio:", e));
+      setIsPlaying(true);
+    }
+  }, [startPlaying, src]); // Thêm src vào dependencies
+
   const togglePlayPause = () => {
+    // Chỉ thực hiện khi có src
+    if (!src) return; 
+
     const newIsPlaying = !isPlaying;
     if (newIsPlaying) {
       audioRef.current.play();
@@ -36,12 +49,16 @@ const MusicPlayer = () => {
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      <audio 
-        ref={audioRef} 
-        src="/background-music.mp3" 
-        loop 
-        preload="auto" // Tải trước audio
-      />
+      {/* --- THAY ĐỔI QUAN TRỌNG --- */}
+      {/* Gán src từ prop, và chỉ render thẻ audio khi có src */}
+      {src && (
+        <audio 
+          ref={audioRef} 
+          src={src} 
+          loop 
+          preload="auto"
+        />
+      )}
       
       <div 
         className="flex items-center justify-end bg-black/25 backdrop-blur-lg border border-white/10 rounded-full transition-all duration-300 ease-in-out overflow-hidden shadow-lg"

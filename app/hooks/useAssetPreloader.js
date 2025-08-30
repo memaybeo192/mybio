@@ -3,48 +3,53 @@
 
 import { useState, useEffect } from 'react';
 
-export const useAssetPreloader = (assetUrls) => {
-  const [isPreloading, setIsPreloading] = useState(true);
+export const useAssetPreloader = (assetPaths) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [assetUrls, setAssetUrls] = useState({});
 
   useEffect(() => {
     let isMounted = true;
+    const createdBlobUrls = []; 
 
-    const preloadAsset = (url) => {
-      return new Promise((resolve, reject) => {
-        const fileExtension = url.split('.').pop();
-        
-        if (['mp4', 'webm'].includes(fileExtension)) {
-          const video = document.createElement('video');
-          video.src = url;
-          // 'canplaythrough' đảm bảo video đã được buffer đủ để phát mượt mà
-          video.oncanplaythrough = () => resolve(url);
-          video.onerror = () => reject(url);
-        } else if (['mp3', 'wav', 'ogg'].includes(fileExtension)) {
-          const audio = new Audio();
-          audio.src = url;
-          audio.oncanplaythrough = () => resolve(url);
-          audio.onerror = () => reject(url);
-        } else {
-          // Có thể mở rộng cho các loại file khác như ảnh nếu cần
-          resolve(url); 
+    const preloadAsset = (path) => {
+      return new Promise(async (resolve, reject) => {
+        try {
+          // --- THAY ĐỔI DUY NHẤT Ở ĐÂY ---
+          // Thay vì fetch(path), chúng ta fetch qua API Route
+          // path.substring(1) để loại bỏ dấu "/" ở đầu (ví dụ: /avatar.mp4 -> avatar.mp4)
+          const response = await fetch(`/api/media?file=${path.substring(1)}`);
+          // ------------------------------------
+
+          if (!response.ok) {
+            throw new Error(`Không thể tải tài nguyên qua API: ${path}`);
+          }
+          const blob = await response.blob();
+          const blobUrl = URL.createObjectURL(blob);
+          createdBlobUrls.push(blobUrl);
+          resolve({ path, blobUrl });
+        } catch (error) {
+          reject({ path, error });
         }
       });
     };
 
     const startPreloading = async () => {
       try {
-        // Chờ cho TẤT CẢ các asset được tải xong
-        await Promise.all(assetUrls.map(preloadAsset));
+        const loadedAssets = await Promise.all(assetPaths.map(preloadAsset));
         
         if (isMounted) {
-          // Chỉ khi tất cả hoàn tất, ta mới báo là đã xong
-          setIsPreloading(false);
+          const urlMap = loadedAssets.reduce((acc, asset) => {
+            acc[asset.path] = asset.blobUrl;
+            return acc;
+          }, {});
+          
+          setAssetUrls(urlMap);
+          setIsLoading(false);
         }
       } catch (error) {
-        console.error("Failed to preload asset:", error);
-        // Ngay cả khi có lỗi, vẫn cho phép người dùng vào
+        console.error("Lỗi khi tải trước tài nguyên:", error.path, error.error);
         if (isMounted) {
-          setIsPreloading(false);
+          setIsLoading(false); 
         }
       }
     };
@@ -53,8 +58,9 @@ export const useAssetPreloader = (assetUrls) => {
 
     return () => {
       isMounted = false;
+      createdBlobUrls.forEach(URL.revokeObjectURL);
     };
-  }, [assetUrls]); // Chỉ chạy lại khi danh sách asset thay đổi
+  }, [assetPaths]);
 
-  return isPreloading;
+  return { isLoading, assetUrls };
 };

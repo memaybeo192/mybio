@@ -17,17 +17,9 @@ const LiveBackground = () => {
     });
   }, []);
 
-  const particlesLoaded = (container) => {
-    console.log(container);
-  };
-
+  // Các thông số đã được hoàn trả về giá trị gốc để có nhiều hạt hơn
   const options = useMemo(
     () => ({
-      background: {
-        color: {
-          value: "transparent",
-        },
-      },
       fpsLimit: 60,
       interactivity: {
         events: {
@@ -39,20 +31,20 @@ const LiveBackground = () => {
         },
         modes: {
           repulse: {
-            distance: 100,
+            distance: 100, // Hoàn trả
             duration: 0.4,
           },
         },
       },
       particles: {
         color: {
-          value: "#ffffff", // Giữ nguyên màu trắng
+          value: "#ffffff",
         },
         links: {
-          color: "#ffffff", // Giữ nguyên màu trắng
+          color: "#ffffff",
           distance: 150,
           enable: true,
-          opacity: 0.2,
+          opacity: 0.2, // Hoàn trả
           width: 1,
         },
         move: {
@@ -62,15 +54,15 @@ const LiveBackground = () => {
             default: "bounce",
           },
           random: false,
-          speed: 1,
+          speed: 1, // Hoàn trả
           straight: false,
         },
         number: {
           density: {
             enable: true,
-            area: 800,
+            area: 800, // Hoàn trả
           },
-          value: 80,
+          value: 80, // Hoàn trả
         },
         opacity: {
           value: 0.3,
@@ -79,7 +71,7 @@ const LiveBackground = () => {
           type: "circle",
         },
         size: {
-          value: { min: 1, max: 5 },
+          value: { min: 1, max: 5 }, // Hoàn trả
         },
       },
       detectRetina: true,
@@ -91,9 +83,8 @@ const LiveBackground = () => {
     return (
       <Particles
         id="tsparticles"
-        particlesLoaded={particlesLoaded}
         options={options}
-        className="absolute top-0 left-0 w-full h-full" // z-index sẽ được quản lý bởi layout
+        className="absolute top-0 left-0 w-full h-full z-[-1]"
       />
     );
   }

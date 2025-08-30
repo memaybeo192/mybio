@@ -33,8 +33,105 @@
 body {
   color: var(--foreground);
   background-color: #0a0a0a; /* Luôn có màu nền đen ban đầu */
-  
-  /* --- ÁP DỤNG ANIMATION VÀO ĐÂY --- */
-  /* Animation sẽ tên là fadeInPage, kéo dài 1.5 giây */
-  animation: fadeInPage 1.5s ease-out forwards;
+  /* 
+    --- ĐÃ SỬA LỖI QUAN TRỌNG NHẤT ---
+    Xóa bỏ animation toàn trang này. Đây là nguyên nhân chính gây ra độ trễ khi click.
+  */
+  /* animation: fadeInPage 1.5s ease-out forwards; */
 }
+
+/* --- HIỆU ỨNG SHINE KHI HOVER (ĐÃ TỐI ƯU) --- */
+.shine-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(-100%) skewX(-25deg);
+  width: 75%;
+  height: 100%;
+  background: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.shine-effect:hover::before {
+  transform: translateX(170%) skewX(-25deg);
+}
+
+/* --- ANIMATION "UNMASK" ĐIỆN ẢNH --- */
+@keyframes unmask {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.animate-unmask {
+  animation: unmask 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  clip-path: inset(100% 0 0 0);
+  animation-delay: 0.1s;
+}
+
+/* --- HIỆU ỨNG GLOW CHO ICON --- */
+@keyframes glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.7));
+  }
+}
+
+.animate-glow {
+  animation: glow 3s ease-in-out infinite;
+}
+
+/* --- HIỆU ỨNG TEXT CHUYỂN SẮC --- */
+.animated-gradient-text {
+  background: linear-gradient(90deg, #e0e0e0, #ffffff, #e0e0e0);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-animation 5s ease infinite;
+}
+
+@keyframes gradient-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* --- HIỆU ỨNG CHO SPLASHSCREEN MỚI --- */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.2; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes subtle-pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+.animate-subtle-pulse {
+  animation: subtle-pulse 2s ease-in-out infinite;
+}
+
+.will-change-optimise {
+  will-change: filter, opacity, transform;
+}
+

@@ -1,7 +1,8 @@
+// app/layout.js
+
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-// 1. Import component "cầu nối"
-import ClientEffects from "./components/ClientEffects";
+import BackgroundVideo from "./components/BackgroundVideo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,6 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
+  metadataBase: new URL('https://mybio-lvve.vercel.app'),
   title: "Shizuna | Just a normal person",
   description: "Trang bio cá nhân của Shizuna (Vương Lâm).",
   openGraph: {
@@ -30,22 +32,15 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* 2. Gọi ClientEffects ở đây. Mọi thứ sẽ hoạt động đúng */}
-        <ClientEffects />
-
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          preload="auto"
-          playsInline // Thêm thuộc tính này để tối ưu cho mobile
-          className="absolute top-0 left-0 w-full h-full object-cover z-[-2]"
-        >
-          <source src="/background.mp4" type="video/mp4" />
-        </video>
+        {/* --- SỬA LỖI: TRẢ VIDEO NỀN VỀ ĐÂY --- */}
+        {/* Đảm bảo video nền luôn có sẵn để chuyển cảnh mượt mà */}
+        <BackgroundVideo />
         
         <div className="absolute top-0 left-0 w-full h-full bg-black/30 z-[-1]"></div>
         
