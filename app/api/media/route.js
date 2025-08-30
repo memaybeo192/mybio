@@ -1,6 +1,6 @@
 // app/api/media/route.js
 import { NextResponse } from 'next/server';
-import fs from 'fs/promises'; // <-- THAY ĐỔI: Sử dụng 'fs/promises'
+import fs from 'fs/promises';
 import path from 'path';
 
 const ALLOWED_FILES = [
@@ -20,18 +20,19 @@ export async function GET(request) {
   const filePath = path.join(process.cwd(), 'public', fileName);
 
   try {
-    // --- THAY ĐỔI CHÍNH ---
-    // Đọc file một cách bất đồng bộ, không làm block server
     const fileBuffer = await fs.readFile(filePath);
-
     const contentType = 'application/octet-stream';
+
+    // --- CẢI TIẾN: THÊM CACHING HEADER ---
+    const headers = {
+      'Content-Type': contentType,
+      'Content-Length': fileBuffer.length.toString(),
+      'Cache-Control': 'public, max-age=31536000, stale-while-revalidate=59',
+    };
 
     return new NextResponse(fileBuffer, {
       status: 200,
-      headers: {
-        'Content-Type': contentType,
-        'Content-Length': fileBuffer.length.toString(),
-      },
+      headers,
     });
   } catch (error) {
     if (error.code === 'ENOENT') {

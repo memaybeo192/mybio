@@ -2,12 +2,14 @@
 "use client";
 
 import CursorLight from './CursorLight';
-import { useIsMobile } from '../hooks/useIsMobile'; // Import hook
+import { useDevice } from '../context/DeviceContext'; // Import hook từ Context
 
 export default function ClientEffects() {
-  const isMobile = useIsMobile();
+  // Lấy trạng thái isMobile từ Context thay vì nhận props
+  const isMobile = useDevice();
 
-  // Chỉ render CursorLight nếu không phải là thiết bị di động
+  // Chỉ render component CursorLight nếu không phải là thiết bị di động.
+  // Điều này giúp tối ưu hiệu suất và tránh các hành vi không mong muốn trên màn hình cảm ứng.
   return (
     <>
       {!isMobile && <CursorLight />}

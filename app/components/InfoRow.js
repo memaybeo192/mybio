@@ -4,9 +4,13 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedText from './AnimatedText';
+import { useDevice } from '../context/DeviceContext'; // <-- CẢI TIẾN: Import hook từ Context
 
-const InfoRow = ({ icon, text, copyText, variants, className, isMobile }) => {
+const InfoRow = ({ icon, text, copyText, variants, className }) => {
   const [copied, setCopied] = useState(false);
+  
+  // <-- CẢI TIẾN: Lấy trạng thái isMobile từ Context thay vì props
+  const isMobile = useDevice();
 
   const handleCopy = () => {
     if (copied) return;
@@ -29,26 +33,20 @@ const InfoRow = ({ icon, text, copyText, variants, className, isMobile }) => {
       style={{ willChange: 'transform, opacity' }}
     >
       <div className="flex items-center gap-4 w-full min-w-0">
+        {/* Sử dụng isMobile từ Context để quyết định class */}
         <span className={!isMobile ? 'animate-glow' : ''}>{icon}</span>
         
-        {/* --- GIẢI PHÁP GRID TRICK --- */}
-        {/* Container này sẽ chứa 2 lớp text chồng lên nhau */}
         <div className="relative font-medium w-full grid place-items-center">
-          
-          {/* LỚP 1: Text gốc (email, discord). Luôn ở đây để giữ layout. */}
-          {/* Nó sẽ bị làm mờ đi khi 'copied' là true */}
           <div
-            aria-hidden={copied} // Ẩn khỏi trình đọc màn hình khi không hiển thị
+            aria-hidden={copied}
             className={`transition-opacity duration-300 col-start-1 row-start-1 w-full ${copied ? 'opacity-0' : 'opacity-100'}`}
           >
             <AnimatedText text={text} />
           </div>
 
-          {/* LỚP 2: Text "Đã sao chép!". Chỉ hiện ra khi 'copied' là true */}
           <AnimatePresence>
             {copied && (
               <motion.div
-                // Các class này đảm bảo nó nằm chồng chính xác lên lớp 1
                 className="absolute inset-0 flex items-center justify-center"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}

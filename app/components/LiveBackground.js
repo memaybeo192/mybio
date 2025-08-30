@@ -4,10 +4,13 @@
 import { useEffect, useMemo, useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim"; 
+import { useDevice } from '../context/DeviceContext'; // <-- CẢI TIẾN: Import hook từ Context
 
-// Thêm prop isMobile
-const LiveBackground = ({ isMobile }) => { 
+const LiveBackground = () => { 
   const [init, setInit] = useState(false);
+  
+  // <-- CẢI TIẾN: Lấy trạng thái isMobile từ Context thay vì props
+  const isMobile = useDevice();
 
   useEffect(() => {
     initParticlesEngine(async (engine) => {
@@ -18,16 +21,16 @@ const LiveBackground = ({ isMobile }) => {
   }, []);
 
   const options = useMemo(() => {
-    // Cấu hình siêu nhẹ cho di động
+    // Cấu hình siêu nhẹ cho di động để tiết kiệm pin và CPU
     const mobileOptions = {
       fpsLimit: 60,
       particles: {
         number: {
-          value: 20, // Giảm mạnh số lượng hạt
+          value: 20,
         },
         move: {
           enable: true,
-          speed: 0.5, // Giảm tốc độ
+          speed: 0.5,
           direction: "none",
           random: true,
           straight: false,
@@ -39,14 +42,12 @@ const LiveBackground = ({ isMobile }) => {
         size: {
           value: { min: 1, max: 3 },
         },
-        // Tắt hoàn toàn đường nối - phần nặng nhất
         links: {
-          enable: false,
+          enable: false, // Tắt đường nối để tối ưu hiệu suất
         },
       },
-      // Tắt hoàn toàn tương tác
       interactivity: {
-        enable: false,
+        enable: false, // Tắt tương tác
       },
       detectRetina: true,
     };
@@ -97,10 +98,10 @@ const LiveBackground = ({ isMobile }) => {
       detectRetina: true,
     };
 
-    // Trả về cấu hình phù hợp
+    // Trả về cấu hình phù hợp dựa trên isMobile từ Context
     return isMobile ? mobileOptions : desktopOptions;
 
-  }, [isMobile]); // Chạy lại khi isMobile thay đổi
+  }, [isMobile]); // Hook useMemo sẽ chạy lại khi giá trị isMobile thay đổi
 
   if (init) {
     return (

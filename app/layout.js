@@ -3,6 +3,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import BackgroundVideo from "./components/BackgroundVideo";
+import { DeviceProvider } from "./context/DeviceContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,19 +33,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* --- SỬA LỖI: TRẢ VIDEO NỀN VỀ ĐÂY --- */}
-        {/* Đảm bảo video nền luôn có sẵn để chuyển cảnh mượt mà */}
-        <BackgroundVideo />
-        
-        <div className="absolute top-0 left-0 w-full h-full bg-black/30 z-[-1]"></div>
-        
-        {children}
+        <DeviceProvider>
+          <BackgroundVideo />
+          <div className="absolute top-0 left-0 w-full h-full bg-black/30 z-[-1]"></div>
+          {children}
+        </DeviceProvider>
       </body>
     </html>
   );
