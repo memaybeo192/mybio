@@ -9,6 +9,7 @@ import InfoRow from './components/InfoRow';
 import MusicPlayer from './components/MusicPlayer';
 import SplashScreen from './components/SplashScreen';
 import { useAssetPreloader } from './hooks/useAssetPreloader';
+import { useIsMobile } from './hooks/useIsMobile'; // IMPORT HOOK MỚI
 import AnimatedText from './components/AnimatedText';
 import ClientEffects from './components/ClientEffects';
 import LiveBackground from './components/LiveBackground';
@@ -30,20 +31,21 @@ const listItems = [
   ...infoData.map(item => ({ ...item, type: 'info' }))
 ];
 
-const SocialLink = ({ href, icon, label, variants }) => (
+// Cập nhật SocialLink để nhận prop isMobile
+const SocialLink = ({ href, icon, label, variants, isMobile }) => (
   <motion.a
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className="shine-effect flex items-center gap-4 p-3 rounded-lg transition-colors duration-300 hover:bg-white/10"
+    className="shine-effect interactive-item flex items-center gap-4 p-3 rounded-lg transition-colors duration-300"
     aria-label={label}
-    whileHover={{ scale: 1.02 }}
     transition={{ type: 'spring', stiffness: 400, damping: 15 }}
     variants={variants}
     style={{ willChange: 'transform, opacity' }}
   >
     <div className="flex items-center gap-4">
-      <span className="animate-glow">{icon}</span>
+      {/* Áp dụng class 'animate-glow' có điều kiện */}
+      <span className={!isMobile ? 'animate-glow' : ''}>{icon}</span>
       <AnimatedText text={label} className="font-medium" />
     </div>
   </motion.a>
@@ -107,6 +109,7 @@ export default function BioPage() {
   const [isAnimationDone, setIsAnimationDone] = useState(false);
   const [hideParticles, setHideParticles] = useState(false);
   const { isLoading, assetUrls } = useAssetPreloader(criticalAssets);
+  const isMobile = useIsMobile(); // SỬ DỤNG HOOK
 
   const handleEnter = () => {
     if (!isLoading) {
@@ -119,6 +122,69 @@ export default function BioPage() {
     }
   };
 
+  // Tách JSX của card chính ra một biến để tránh lặp code
+  const MainCard = (
+    <motion.main 
+      className="w-full max-w-md mx-auto p-8 rounded-2xl shadow-lg bg-black/25 backdrop-blur-lg border border-white/10 overflow-hidden"
+      key="main-card"
+      variants={mainCardVariants}
+      initial="hidden"
+      animate="visible"
+      onAnimationComplete={() => {
+        setIsAnimationDone(true);
+        setHideParticles(false);
+      }}
+      style={{ willChange: 'transform, clip-path, opacity' }}
+    >
+      <motion.div 
+        variants={introVariants} 
+        initial="hidden"
+        animate="visible"
+        className="flex flex-col items-center text-center gap-6"
+      >
+        <motion.div
+            animate={{ scale: [1, 1.03, 1] }}
+            transition={{ duration: 5, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
+          >
+            {assetUrls['/avatar.mp4'] && (
+              <motion.video
+                src={assetUrls['/avatar.mp4']}
+                aria-hidden="true" autoPlay loop muted playsInline
+                width={120} height={120}
+                className="rounded-full border-2 border-white/20"
+                style={{ boxShadow: '0 0 30px rgba(255, 255, 255, 0.3)'}}
+              />
+            )}
+          </motion.div>
+          <div className="flex flex-col gap-3">
+            <motion.h1 className="animated-gradient-text text-3xl font-bold tracking-tight">
+              Shizuna (Lam)
+            </motion.h1>
+            <AnimatedText
+              text="Just a normal person | Birthday 18/1"
+              className="text-md text-white/70 justify-center"
+              type="word"
+            />
+          </div>
+      </motion.div>
+
+      <motion.div 
+        className="mt-10 flex flex-col gap-3"
+        variants={listContainerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        {listItems.map((item) => 
+          item.type === 'social' ? (
+            <SocialLink key={item.label} variants={listItemVariants} {...item} isMobile={isMobile} />
+          ) : (
+            <InfoRow key={item.text} variants={listItemVariants} {...item} isMobile={isMobile} />
+          )
+        )}
+      </motion.div>
+    </motion.main>
+  );
+
   return (
     <div className="font-sans flex items-center justify-center min-h-screen p-4 text-white overflow-hidden">
       <div 
@@ -127,7 +193,8 @@ export default function BioPage() {
       >
         <ClientEffects />
         <div className={`transition-opacity duration-500 ${hideParticles ? 'opacity-0' : 'opacity-100'}`}>
-            <LiveBackground />
+            {/* Truyền prop isMobile xuống LiveBackground */}
+            <LiveBackground isMobile={isMobile} />
         </div>
       </div>
 
@@ -147,75 +214,24 @@ export default function BioPage() {
 
       <AnimatePresence>
         {showMainContent && (
-            <ParallaxTilt
-              className="z-10"
-              perspective={1000} 
-              tiltMaxAngleX={8}
-              tiltMaxAngleY={8}
-              scale={1.03}
-              glareEnable={isAnimationDone}
-              glareMaxOpacity={0.2} 
-              glarePosition="all"
-              transitionSpeed={1500} 
-            >
-              <motion.main 
-                className="w-full max-w-md mx-auto p-8 rounded-2xl shadow-lg bg-black/25 backdrop-blur-lg border border-white/10 overflow-hidden"
-                key="main-card"
-                variants={mainCardVariants}
-                initial="hidden"
-                animate="visible"
-                onAnimationComplete={() => {
-                  setIsAnimationDone(true);
-                  setHideParticles(false);
-                }}
-                style={{ willChange: 'transform, clip-path, opacity' }}
+            // Điều kiện để tắt ParallaxTilt trên di động
+            isMobile ? (
+              <div className="z-10">{MainCard}</div>
+            ) : (
+              <ParallaxTilt
+                className="z-10"
+                perspective={1000} 
+                tiltMaxAngleX={8}
+                tiltMaxAngleY={8}
+                scale={1.03}
+                glareEnable={isAnimationDone}
+                glareMaxOpacity={0.2} 
+                glarePosition="all"
+                transitionSpeed={1500} 
               >
-                <motion.div 
-                  variants={introVariants} 
-                  initial="hidden"
-                  animate="visible"
-                  className="flex flex-col items-center text-center gap-6"
-                >
-                  <motion.div
-                      animate={{ scale: [1, 1.03, 1] }}
-                      transition={{ duration: 5, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
-                    >
-                      {assetUrls['/avatar.mp4'] && (
-                        <motion.video
-                          src={assetUrls['/avatar.mp4']}
-                          aria-hidden="true" autoPlay loop muted playsInline
-                          width={120} height={120}
-                          className="rounded-full border-2 border-white/20"
-                          style={{ boxShadow: '0 0 30px rgba(255, 255, 255, 0.3)'}}
-                        />
-                      )}
-                    </motion.div>
-                    <div className="flex flex-col gap-2">
-                      <motion.h1 className="animated-gradient-text text-3xl font-bold tracking-tight">
-                        Shizuna (Lam)
-                      </motion.h1>
-                      <motion.p className="text-md text-white/70">
-                        Just a normal person | Birthday 18/1
-                      </motion.p>
-                    </div>
-                </motion.div>
-
-                <motion.div 
-                  className="mt-10 flex flex-col gap-3"
-                  variants={listContainerVariants}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  {listItems.map((item) => 
-                    item.type === 'social' ? (
-                      <SocialLink key={item.label} variants={listItemVariants} {...item} />
-                    ) : (
-                      <InfoRow key={item.text} variants={listItemVariants} {...item} />
-                    )
-                  )}
-                </motion.div>
-              </motion.main>
-            </ParallaxTilt>
+                {MainCard}
+              </ParallaxTilt>
+            )
         )}
       </AnimatePresence>
     </div>

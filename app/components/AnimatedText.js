@@ -3,12 +3,11 @@
 
 import { motion } from 'framer-motion';
 
-// Định nghĩa kịch bản animation cho container và từng chữ cái
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: (i = 1) => ({
     opacity: 1,
-    transition: { staggerChildren: 0.025, delayChildren: 0.04 * i },
+    transition: { staggerChildren: 0.03, delayChildren: 0.04 * i },
   }),
 };
 
@@ -33,23 +32,27 @@ const childVariants = {
   },
 };
 
-const AnimatedText = ({ text, className }) => {
-  const letters = Array.from(text);
+const AnimatedText = ({ text, className, type = 'letter' }) => {
+  const items = type === 'letter' ? Array.from(text) : text.split(' ');
 
   return (
-    <motion.h2
-      style={{ display: 'flex', overflow: 'hidden' }}
+    <motion.div
+      style={{ display: 'flex', flexWrap: 'wrap', overflow: 'hidden' }}
       variants={containerVariants}
       initial="hidden"
       animate="visible"
       className={className}
     >
-      {letters.map((letter, index) => (
-        <motion.span key={index} variants={childVariants}>
-          {letter === ' ' ? '\u00A0' : letter}
+      {items.map((item, index) => (
+        <motion.span
+          key={index}
+          variants={childVariants}
+          style={{ marginRight: type === 'word' ? '0.25em' : '0' }}
+        >
+          {item === ' ' ? '\u00A0' : item}
         </motion.span>
       ))}
-    </motion.h2>
+    </motion.div>
   );
 };
 

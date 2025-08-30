@@ -20,7 +20,6 @@
   }
 }
 
-/* --- ĐỊNH NGHĨA ANIMATION FADE-IN CHO CẢ TRANG --- */
 @keyframes fadeInPage {
   from {
     opacity: 0;
@@ -32,15 +31,9 @@
 
 body {
   color: var(--foreground);
-  background-color: #0a0a0a; /* Luôn có màu nền đen ban đầu */
-  /* 
-    --- ĐÃ SỬA LỖI QUAN TRỌNG NHẤT ---
-    Xóa bỏ animation toàn trang này. Đây là nguyên nhân chính gây ra độ trễ khi click.
-  */
-  /* animation: fadeInPage 1.5s ease-out forwards; */
+  background-color: #0a0a0a;
 }
 
-/* --- HIỆU ỨNG SHINE KHI HOVER (ĐÃ TỐI ƯU) --- */
 .shine-effect {
   position: relative;
   overflow: hidden;
@@ -67,7 +60,6 @@ body {
   transform: translateX(170%) skewX(-25deg);
 }
 
-/* --- ANIMATION "UNMASK" ĐIỆN ẢNH --- */
 @keyframes unmask {
   from {
     clip-path: inset(100% 0 0 0);
@@ -83,7 +75,6 @@ body {
   animation-delay: 0.1s;
 }
 
-/* --- HIỆU ỨNG GLOW CHO ICON --- */
 @keyframes glow {
   0%, 100% {
     filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
@@ -97,7 +88,6 @@ body {
   animation: glow 3s ease-in-out infinite;
 }
 
-/* --- HIỆU ỨNG TEXT CHUYỂN SẮC --- */
 .animated-gradient-text {
   background: linear-gradient(90deg, #e0e0e0, #ffffff, #e0e0e0);
   background-size: 200% 200%;
@@ -112,7 +102,6 @@ body {
   100% { background-position: 0% 50%; }
 }
 
-/* --- HIỆU ỨNG CHO SPLASHSCREEN MỚI --- */
 @keyframes pulse-dot {
   0%, 100% { opacity: 0.2; transform: scale(0.9); }
   50% { opacity: 1; transform: scale(1); }
@@ -135,3 +124,34 @@ body {
   will-change: filter, opacity, transform;
 }
 
+/* --- CÁC CLASS MỚI ĐƯỢC THÊM VÀO --- */
+.interactive-item {
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.interactive-item:hover {
+  transform: translateY(-4px);
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.1);
+}
+
+.interactive-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 0.5rem; /* Tailwind's rounded-lg */
+    padding: 1px;
+    background: linear-gradient(45deg, rgba(255,255,255,0), rgba(255,255,255,0.3), rgba(255,255,255,0));
+    -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.interactive-item:hover::after {
+    opacity: 1;
+}

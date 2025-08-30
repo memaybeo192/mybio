@@ -1,12 +1,12 @@
 // app/components/LiveBackground.js
-
 "use client"; 
 
 import { useEffect, useMemo, useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim"; 
 
-const LiveBackground = () => {
+// Thêm prop isMobile
+const LiveBackground = ({ isMobile }) => { 
   const [init, setInit] = useState(false);
 
   useEffect(() => {
@@ -17,67 +17,90 @@ const LiveBackground = () => {
     });
   }, []);
 
-  // Các thông số đã được hoàn trả về giá trị gốc để có nhiều hạt hơn
-  const options = useMemo(
-    () => ({
+  const options = useMemo(() => {
+    // Cấu hình siêu nhẹ cho di động
+    const mobileOptions = {
       fpsLimit: 60,
+      particles: {
+        number: {
+          value: 20, // Giảm mạnh số lượng hạt
+        },
+        move: {
+          enable: true,
+          speed: 0.5, // Giảm tốc độ
+          direction: "none",
+          random: true,
+          straight: false,
+          outModes: "out",
+        },
+        opacity: {
+          value: { min: 0.3, max: 0.7 },
+        },
+        size: {
+          value: { min: 1, max: 3 },
+        },
+        // Tắt hoàn toàn đường nối - phần nặng nhất
+        links: {
+          enable: false,
+        },
+      },
+      // Tắt hoàn toàn tương tác
+      interactivity: {
+        enable: false,
+      },
+      detectRetina: true,
+    };
+
+    // Cấu hình đầy đủ cho desktop
+    const desktopOptions = {
+      fpsLimit: 120,
       interactivity: {
         events: {
-          onHover: {
-            enable: true,
-            mode: "repulse",
-          },
+          onHover: { enable: true, mode: "grab" },
           resize: true,
         },
         modes: {
-          repulse: {
-            distance: 100, // Hoàn trả
-            duration: 0.4,
-          },
+          grab: { distance: 200, links: { opacity: 0.5 } },
         },
       },
       particles: {
-        color: {
-          value: "#ffffff",
-        },
+        color: { value: "#ffffff" },
         links: {
           color: "#ffffff",
           distance: 150,
           enable: true,
-          opacity: 0.2, // Hoàn trả
+          opacity: 0.15,
           width: 1,
         },
         move: {
           direction: "none",
           enable: true,
-          outModes: {
-            default: "bounce",
-          },
-          random: false,
-          speed: 1, // Hoàn trả
+          outModes: { default: "bounce" },
+          random: true,
+          speed: 1,
           straight: false,
         },
         number: {
-          density: {
-            enable: true,
-            area: 800, // Hoàn trả
-          },
-          value: 80, // Hoàn trả
+          density: { enable: true, area: 700 },
+          value: 100,
         },
         opacity: {
-          value: 0.3,
+          value: { min: 0.2, max: 0.6 },
+          animation: { enable: true, speed: 1, minimumValue: 0.2, sync: false },
         },
-        shape: {
-          type: "circle",
-        },
+        shape: { type: "circle" },
         size: {
-          value: { min: 1, max: 5 }, // Hoàn trả
+          value: { min: 1, max: 3 },
+          animation: { enable: true, speed: 2, minimumValue: 0.5, sync: false },
         },
       },
       detectRetina: true,
-    }),
-    [],
-  );
+    };
+
+    // Trả về cấu hình phù hợp
+    return isMobile ? mobileOptions : desktopOptions;
+
+  }, [isMobile]); // Chạy lại khi isMobile thay đổi
 
   if (init) {
     return (
