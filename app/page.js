@@ -8,12 +8,12 @@ import ParallaxTilt from 'react-parallax-tilt';
 import InfoRow from './components/InfoRow';
 import MusicPlayer from './components/MusicPlayer';
 import SplashScreen from './components/SplashScreen';
-import { useAssetPreloader } from './hooks/useAssetPreloader';
 import AnimatedText from './components/AnimatedText';
 import ClientEffects from './components/ClientEffects';
 import LiveBackground from './components/LiveBackground';
+import BackgroundVideo from './components/BackgroundVideo';
 
-const criticalAssets = ['/avatar.mp4', '/background-music.mp3'];
+// Các hằng số định nghĩa dữ liệu, không thay đổi
 const socialLinksData = [
   { href: "https://www.youtube.com/@Memayybo", icon: <FaYoutube size={24} />, label: "Memayybo" },
   { href: "https://www.facebook.com/vuonglamzz/", icon: <FaFacebook size={24} />, label: "Vuong Lam Nguyen" },
@@ -30,6 +30,7 @@ const listItems = [
   ...infoData.map(item => ({ ...item, type: 'info' }))
 ];
 
+// Component con, không thay đổi
 const SocialLink = ({ href, icon, label, variants }) => (
   <motion.a
     href={href}
@@ -49,6 +50,7 @@ const SocialLink = ({ href, icon, label, variants }) => (
   </motion.a>
 );
 
+// Các variants cho animation, không thay đổi
 const mainCardVariants = {
   hidden: { 
     clipPath: 'inset(45% 45% 45% 45% round 24px)',
@@ -106,21 +108,23 @@ export default function BioPage() {
   const [showMainContent, setShowMainContent] = useState(false);
   const [isAnimationDone, setIsAnimationDone] = useState(false);
   const [hideParticles, setHideParticles] = useState(false);
-  const { isLoading, assetUrls } = useAssetPreloader(criticalAssets);
 
   const handleEnter = () => {
-    if (!isLoading) {
-      setShowSplash(false);
-      
-      setTimeout(() => {
-        setShowMainContent(true);
-        setHideParticles(true); 
-      }, 200); 
-    }
+    // Không cần check isLoading nữa, splash screen luôn sẵn sàng
+    setShowSplash(false);
+    
+    setTimeout(() => {
+      setShowMainContent(true);
+      setHideParticles(true); 
+    }, 200); 
   };
 
   return (
     <div className="font-sans flex items-center justify-center min-h-screen p-4 text-white overflow-hidden">
+      {/* Đặt các hiệu ứng nền chung ở đây để đảm bảo chúng luôn tồn tại */}
+      <BackgroundVideo />
+      <div className="absolute top-0 left-0 w-full h-full bg-black/30 z-[-1]"></div>
+
       <div 
         className={`fixed inset-0 transition-opacity duration-700 ease-in-out ${showMainContent ? 'opacity-100' : 'opacity-0'}`}
         style={{ pointerEvents: showMainContent ? 'auto' : 'none' }}
@@ -134,14 +138,16 @@ export default function BioPage() {
       <AnimatePresence>
         {showSplash && (
           <motion.div key="splash" exit={{ opacity: 0 }} transition={{ duration: 0.3, ease: 'easeOut' }}>
-            <SplashScreen onEnter={handleEnter} isLoading={isLoading} />
+            {/* Bỏ prop isLoading, splash screen sẽ tự động hiển thị trạng thái sẵn sàng */}
+            <SplashScreen onEnter={handleEnter} />
           </motion.div>
         )}
       </AnimatePresence>
       
       <AnimatePresence>
-        {showMainContent && assetUrls['/background-music.mp3'] && (
-            <MusicPlayer src={assetUrls['/background-music.mp3']} startPlaying={showMainContent} />
+        {showMainContent && (
+            // Trỏ src trực tiếp đến file đã được trình duyệt preload
+            <MusicPlayer src="/background-music.mp3" startPlaying={showMainContent} />
         )}
       </AnimatePresence>
 
@@ -180,15 +186,14 @@ export default function BioPage() {
                       animate={{ scale: [1, 1.03, 1] }}
                       transition={{ duration: 5, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
                     >
-                      {assetUrls['/avatar.mp4'] && (
-                        <motion.video
-                          src={assetUrls['/avatar.mp4']}
-                          aria-hidden="true" autoPlay loop muted playsInline
-                          width={120} height={120}
-                          className="rounded-full border-2 border-white/20"
-                          style={{ boxShadow: '0 0 30px rgba(255, 255, 255, 0.3)'}}
-                        />
-                      )}
+                      {/* Trỏ src trực tiếp đến file đã được trình duyệt preload */}
+                      <motion.video
+                        src="/avatar.mp4"
+                        aria-hidden="true" autoPlay loop muted playsInline
+                        width={120} height={120}
+                        className="rounded-full border-2 border-white/20"
+                        style={{ boxShadow: '0 0 30px rgba(255, 255, 255, 0.3)'}}
+                      />
                     </motion.div>
                     <div className="flex flex-col gap-2">
                       <motion.h1 className="animated-gradient-text text-3xl font-bold tracking-tight">
