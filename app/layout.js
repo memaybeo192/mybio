@@ -33,17 +33,38 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        {/* --- BẮT ĐẦU THAY ĐỔI: "RA LỆNH" CHO TRÌNH DUYỆT TẢI TRƯỚC --- */}
+        {/* Yêu cầu trình duyệt tải các tài nguyên quan trọng ngay lập tức */}
+        <link 
+          rel="preload" 
+          href="/background.mp4" 
+          as="video" 
+          type="video/mp4" 
+          crossOrigin="anonymous" 
+        />
+        <link 
+          rel="preload" 
+          href="/avatar.mp4" 
+          as="video" 
+          type="video/mp4" 
+          crossOrigin="anonymous" 
+        />
+        <link 
+          rel="preload" 
+          href="/background-music.mp3" 
+          as="audio" 
+          type="audio/mpeg" 
+          crossOrigin="anonymous" 
+        />
+        {/* --- KẾT THÚC THAY ĐỔI --- */}
+        
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* --- SỬA LỖI: TRẢ VIDEO NỀN VỀ ĐÂY --- */}
-        {/* Đảm bảo video nền luôn có sẵn để chuyển cảnh mượt mà */}
         <BackgroundVideo />
-        
         <div className="absolute top-0 left-0 w-full h-full bg-black/30 z-[-1]"></div>
-        
         {children}
       </body>
     </html>
