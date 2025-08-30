@@ -2,6 +2,7 @@
 
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import BackgroundVideo from "./components/BackgroundVideo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,37 +33,17 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        {/* --- TỐI ƯU HYBRID: YÊU CẦU TRÌNH DUYỆT TẢI TRƯỚC CÁC TÀI NGUYÊN QUAN TRỌNG --- */}
-        {/* Trình duyệt sẽ bắt đầu tải các file này với ưu tiên cao ngay khi đọc HTML */}
-        <link 
-          rel="preload" 
-          href="/background.mp4" 
-          as="video" 
-          type="video/mp4" 
-          crossOrigin="anonymous" 
-        />
-        <link 
-          rel="preload" 
-          href="/avatar.mp4" 
-          as="video" 
-          type="video/mp4" 
-          crossOrigin="anonymous" 
-        />
-        <link 
-          rel="preload" 
-          href="/background-music.mp3" 
-          as="audio" 
-          type="audio/mpeg" 
-          crossOrigin="anonymous" 
-        />
-        
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* Layout giờ đây chỉ là một cái vỏ, nội dung cụ thể (bao gồm cả video nền) 
-            sẽ do page.js quyết định, giúp kiến trúc sạch sẽ hơn. */}
+        {/* --- SỬA LỖI: TRẢ VIDEO NỀN VỀ ĐÂY --- */}
+        {/* Đảm bảo video nền luôn có sẵn để chuyển cảnh mượt mà */}
+        <BackgroundVideo />
+        
+        <div className="absolute top-0 left-0 w-full h-full bg-black/30 z-[-1]"></div>
+        
         {children}
       </body>
     </html>
