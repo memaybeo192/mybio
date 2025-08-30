@@ -9,7 +9,7 @@ import InfoRow from './components/InfoRow';
 import MusicPlayer from './components/MusicPlayer';
 import SplashScreen from './components/SplashScreen';
 import { useAssetPreloader } from './hooks/useAssetPreloader';
-import { useIsMobile } from './hooks/useIsMobile'; // IMPORT HOOK MỚI
+import { useIsMobile } from './hooks/useIsMobile';
 import AnimatedText from './components/AnimatedText';
 import ClientEffects from './components/ClientEffects';
 import LiveBackground from './components/LiveBackground';
@@ -31,20 +31,20 @@ const listItems = [
   ...infoData.map(item => ({ ...item, type: 'info' }))
 ];
 
-// Cập nhật SocialLink để nhận prop isMobile
+// --- THAY ĐỔI QUAN TRỌNG Ở ĐÂY ---
 const SocialLink = ({ href, icon, label, variants, isMobile }) => (
   <motion.a
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className="shine-effect interactive-item flex items-center gap-4 p-3 rounded-lg transition-colors duration-300"
+    // <-- SỬA LỖI: THÊM 'w-full' ĐỂ ĐỒNG BỘ VỚI INFOROW
+    className="shine-effect interactive-item flex items-center gap-4 p-3 rounded-lg transition-colors duration-300 w-full"
     aria-label={label}
     transition={{ type: 'spring', stiffness: 400, damping: 15 }}
     variants={variants}
     style={{ willChange: 'transform, opacity' }}
   >
     <div className="flex items-center gap-4">
-      {/* Áp dụng class 'animate-glow' có điều kiện */}
       <span className={!isMobile ? 'animate-glow' : ''}>{icon}</span>
       <AnimatedText text={label} className="font-medium" />
     </div>
@@ -109,7 +109,7 @@ export default function BioPage() {
   const [isAnimationDone, setIsAnimationDone] = useState(false);
   const [hideParticles, setHideParticles] = useState(false);
   const { isLoading, assetUrls } = useAssetPreloader(criticalAssets);
-  const isMobile = useIsMobile(); // SỬ DỤNG HOOK
+  const isMobile = useIsMobile();
 
   const handleEnter = () => {
     if (!isLoading) {
@@ -122,7 +122,6 @@ export default function BioPage() {
     }
   };
 
-  // Tách JSX của card chính ra một biến để tránh lặp code
   const MainCard = (
     <motion.main 
       className="w-full max-w-md mx-auto p-8 rounded-2xl shadow-lg bg-black/25 backdrop-blur-lg border border-white/10 overflow-hidden"
@@ -193,7 +192,6 @@ export default function BioPage() {
       >
         <ClientEffects />
         <div className={`transition-opacity duration-500 ${hideParticles ? 'opacity-0' : 'opacity-100'}`}>
-            {/* Truyền prop isMobile xuống LiveBackground */}
             <LiveBackground isMobile={isMobile} />
         </div>
       </div>
@@ -214,7 +212,6 @@ export default function BioPage() {
 
       <AnimatePresence>
         {showMainContent && (
-            // Điều kiện để tắt ParallaxTilt trên di động
             isMobile ? (
               <div className="z-10">{MainCard}</div>
             ) : (
